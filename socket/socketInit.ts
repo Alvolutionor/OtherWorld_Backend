@@ -27,6 +27,8 @@ export default class Server_socket{
     }); 
     server.listen(37788)
     io.on("connection", (socket:Socket)=>{
+      console.log("listening")
+
       let logInData: socketLoginMessage
       socket.emit("Connected")
       socket.on("login",(socketLoginMessage: socketLoginMessage)=>{
@@ -39,8 +41,7 @@ export default class Server_socket{
         //io.emit("loginFailed")
       })
       socket.on("toRoom",(socketToRoom: socketToRoom)=>{
-        io.to(socketToRoom.roomId).emit("NewUser",logInData.name);
-
+        socket.broadcast.emit("NewUser", logInData.name)
         socket.join(socketToRoom.roomId)
         console.log("a user joined room")
         console.log(socketToRoom)
@@ -50,11 +51,29 @@ export default class Server_socket{
       socket.on("leaveRoom",(socketToRoom)=>{
         socket.leave(socketToRoom.roomId)
       })
-      socket.on("sendMsg",({who,what,roomId}:{who:string, what:string, roomId:string})=>{
-        io.to(roomId).emit("UserMessage",{who,what});
-        console.log( logInData.name + "says" + roomId)
+      socket.on("sendMsg",({who,what}:{who:string, what:string})=>{
+        who=who?who:"Anonymous"
+        socket.broadcast.emit("UserMessage", {who,what})
+        console.log( who + " says:" + what)
           
       })
+      socket.on("__RTCOffer",(msg)=>{
+        socket.broadcast.emit("__RTCOffer",msg)
+        console.log("__RTCOffer")
+        console.log(msg)
+
+      })
+      socket.on("__RTCCandidate",(msg)=>{
+        console.log("__RTCCandidate")
+        console.log(msg)
+        socket.broadcast.emit("__RTCCandidate",msg)
+      })
+      socket.on("__RTCAnswer",(msg)=>{
+        console.log("__RTCAnswer")
+        console.log(msg)
+        socket.broadcast.emit("__RTCAnswer",msg)
+      })
+
     })
   }
 

@@ -1,5 +1,5 @@
 import { Server,Socket } from 'socket.io';
-import http from "http";
+import https from "https";
 import {Application} from "express"
 
 export interface socketLoginMessage{
@@ -16,7 +16,7 @@ export interface socketToRoom{
 export default class Server_socket{
 
   constructor(app:Application){
-    const server = http.createServer(app);
+    const server = https.createServer(app);
     const io = new Server(server, {
       cors: {
         origin: "*",
@@ -72,6 +72,12 @@ export default class Server_socket{
         console.log("__RTCAnswer")
         console.log(msg)
         socket.broadcast.emit("__RTCAnswer",msg)
+      })
+      socket.on("__RC",(msg:{stage:string,payload:{name:string,password:string,device:string}})=>{
+        if (msg.stage == 'login'){
+          msg.payload
+        }
+
       })
 
     })

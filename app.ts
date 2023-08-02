@@ -2,7 +2,7 @@ require('dotenv').config();
 import helmet from 'helmet';
 import cors from 'cors';
 import express from 'express';
-import Server_socket from "./util/socket/socketInit"
+import Server_socket from "./socket/socketInit"
 const morgan = require('morgan');
 const xss = require('xss-clean');
 

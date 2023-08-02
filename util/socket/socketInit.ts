@@ -1,7 +1,6 @@
 import { Server,Socket } from 'socket.io';
-import {Application} from "express"
-import https from "https";
 import http from "http";
+import {Application} from "express"
 
 export interface socketLoginMessage{
   type:string// logged in or annouymous
@@ -17,8 +16,7 @@ export interface socketToRoom{
 export default class Server_socket{
 
   constructor(app:Application){
-    const server = (process.env.ENV_LOCAL == "false")?https.createServer(app):http.createServer(app)
-
+    const server = http.createServer(app);
     const io = new Server(server, {
       cors: {
         origin: "*",
